@@ -4,14 +4,14 @@ import json
 import os
 import datetime
 import argparse
-from cerevoice_synth import synth
+from voice_synth import synth
 from shutil import copyfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n", help='number of json files', default=5, type=int)
 parser.add_argument("--s", help='number of entries in each json file', default=10, type=int)
-parser.add_argument("--o", help='path for output', default=os.getcwd() )
-parser.add_argument("--p", help='path for json input', default=os.getcwd() )
+parser.add_argument("--o", help='path for output', default=os.getcwd()+"/data/output/" )
+parser.add_argument("--p", help='path for json input', default=os.getcwd()+"/data/" )
 parser.add_argument("--i", help='path to image corpus', default="/media/dsgserve1/Corpora/External/ImageCorpora/MSCOCO/train2014")
 args = parser.parse_args()
 
@@ -30,6 +30,11 @@ def img_filename(image_id):
     return ("COCO_train2014_"+img+".jpg")
 
 if __name__ == '__main__':
+
+    # make sure output directory exists
+    if not os.path.exists(cwd):
+        os.makedirs(cwd)
+        print ("created directory: "+cwd)
 
     # switch to output directory
     os.chdir(cwd)
