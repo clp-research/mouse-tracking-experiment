@@ -1,3 +1,4 @@
 preprocessing/cerevoice_eng/
-preprocessing/Voice/
+preprocessing/voice/
 preprocessing/voice_synth.pyc
+evaluation/.ipynb_checkpoints/

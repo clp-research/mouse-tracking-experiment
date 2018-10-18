@@ -38,8 +38,8 @@ def synth(input_str, filename="output.wav", outdir=None):
     if not outdir:
         cwd = os.getcwd()
         outdir = cwd
-    licensefile = os.path.dirname(os.path.abspath(__file__))+"/Voice/heather.lic"
-    voicefile =os.path.dirname(os.path.abspath(__file__))+ "/Voice/cerevoice_heather_4.0.0_48k.voice"
+    licensefile = os.path.dirname(os.path.abspath(__file__))+"/voice/heather.lic"
+    voicefile =os.path.dirname(os.path.abspath(__file__))+ "/voice/cerevoice_heather_4.0.0_48k.voice"
     ondisk = False
 
     # Create an engine
