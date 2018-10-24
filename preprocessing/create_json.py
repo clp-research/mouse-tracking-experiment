@@ -78,7 +78,8 @@ if __name__ == '__main__':
             rexid = rslt["rex_id"].values[0]
             audio_filename ="{img_id}-{rex_id}.wav".format(img_id=i,rex_id=rexid)
             synth("Please click on the "+str(refexp), filename=audio_filename, outdir="audio")
-
+            synth("please try again.", filename="tryagain.wav", outdir="audio")
+            synth("correct.", filename="correct.wav", outdir="audio")
             # add image and audio file names and append to results
             rslt["image_filename"]= image_filename
             rslt["audio_filename"]= audio_filename
