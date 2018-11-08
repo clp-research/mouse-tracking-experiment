@@ -4,19 +4,33 @@ import json
 import os
 import datetime
 import argparse
+import configparser
 from voice_synth import synth
 from shutil import copyfile
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+if 'output' in config['PATHS']:
+    outdir = config['PATHS']['output']
+else:
+    outdir = os.getcwd()+"/data/output/"
+
+if 'json' in config['PATHS']:
+    json_path = config['PATHS']['json']
+else:
+    json_path = os.getcwd()+"/data/"
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--n", help='number of json files', default=5, type=int)
-parser.add_argument("--s", help='number of entries in each json file', default=10, type=int)
-parser.add_argument("--o", help='path for output', default=os.getcwd()+"/data/output/" )
-parser.add_argument("--p", help='path for json input', default=os.getcwd()+"/data/" )
-parser.add_argument("--i", help='path to image corpus', default="/media/dsgserve1/Corpora/External/ImageCorpora/MSCOCO/train2014")
+parser.add_argument("--s", help='number of sets to be created', default=int(config['SETTINGS']['sets']), type=int)
+parser.add_argument("--n", help='number of images per set', default=int(config['SETTINGS']['images']), type=int)
+parser.add_argument("--o", help='path for output', default=outdir)
+parser.add_argument("--p", help='path for json input', default=json_path)
+parser.add_argument("--i", help='path to image corpus', default=config['PATHS']['corpus'])
 args = parser.parse_args()
 
-n = args.n
-sample_size = args.s
+n = args.s
+sample_size = args.n
 in_dir = os.path.abspath(args.p)
 cwd = os.path.abspath(args.o)
 image_dir = os.path.abspath(args.i)
@@ -78,8 +92,11 @@ if __name__ == '__main__':
             rexid = rslt["rex_id"].values[0]
             audio_filename ="{img_id}-{rex_id}.wav".format(img_id=i,rex_id=rexid)
             synth("Please click on the "+str(refexp), filename=audio_filename, outdir="audio")
-            synth("please try again.", filename="tryagain.wav", outdir="audio")
-            synth("correct.", filename="correct.wav", outdir="audio")
+
+            # add default audio files
+            synth("Correct.", filename="correct.wav", outdir="audio")
+            synth("Try again.", filename="tryagain.wav", outdir="audio")
+
             # add image and audio file names and append to results
             rslt["image_filename"]= image_filename
             rslt["audio_filename"]= audio_filename
