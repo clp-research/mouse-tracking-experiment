@@ -1,4 +1,5 @@
 preprocessing/cerevoice_eng/
 preprocessing/voice/
 preprocessing/voice_synth.pyc
+preprocessing/config.ini
 evaluation/.ipynb_checkpoints/

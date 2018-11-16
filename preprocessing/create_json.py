@@ -87,11 +87,30 @@ if __name__ == '__main__':
             img_destination = cwd+"/images/" + image_filename
             copyfile(img_source, img_destination)
 
-            # create audio file with refexp and store in audio output folder
+            # Audio file creation:
             refexp = rslt["refexp"].values[0]
             rexid = rslt["rex_id"].values[0]
             audio_filename ="{img_id}-{rex_id}.wav".format(img_id=i,rex_id=rexid)
-            synth("Please click on the "+str(refexp), filename=audio_filename, outdir="audio")
+
+            # SSML template for text to speech synthesis
+            ssml_template =  """
+                <?xml version="1.0"?>
+                <speak version="1.1" xmlns="http://www.w3.org/2001/10/synthesis"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.w3.org/2001/10/synthesis
+                                 http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
+                       xml:lang="en-GB">
+                       <prosody rate="slow">
+                            <p>
+                                <s>{text}</s>
+                            </p>
+                        </prosody>
+                </speak>
+                """
+
+            # add refexp to SSML template and synthesize
+            utterance = ssml_template.format(text="Please click on the "+str(refexp))
+            synth(utterance, filename=audio_filename, outdir="audio")
 
             # add default audio files
             synth("Correct.", filename="correct.wav", outdir="audio")
