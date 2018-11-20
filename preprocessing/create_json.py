@@ -66,6 +66,8 @@ if __name__ == '__main__':
     # extract unique image_ids from refdf
     image_ids = refdf['image_id'].unique()
 
+    print ("\ncreating data sets\n")
+
     for m in range(n):
 
         # get 10 random image_ids
@@ -86,6 +88,13 @@ if __name__ == '__main__':
             img_source = image_dir + "/" + image_filename
             img_destination = cwd+"/images/" + image_filename
             copyfile(img_source, img_destination)
+            print ("image "+image_filename)
+
+            # add whitespace where continue button can be placed
+
+            #    Create a new_img that is (base_width, base_height + background.height) in size
+            #    Paste the original img into new_img at (0, 0)
+            #    Paste the background into new_img at (0, base_height)
 
             # Audio file creation:
             refexp = rslt["refexp"].values[0]
@@ -100,21 +109,19 @@ if __name__ == '__main__':
                        xsi:schemaLocation="http://www.w3.org/2001/10/synthesis
                                  http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
                        xml:lang="en-GB">
-                       <prosody rate="slow">
-                            <p>
-                                <s>{text}</s>
-                            </p>
+                                <s>
+                                    Please click on the <prosody rate="{prosody_rate}">{text}.</prosody>
+                                </s>
                         </prosody>
                 </speak>
                 """
 
-            # add refexp to SSML template and synthesize
-            utterance = ssml_template.format(text="Please click on the "+str(refexp))
-            synth(utterance, filename=audio_filename, outdir="audio")
+            # adjust prosody rate for refexp (x-slow, slow, medium, fast, x-fast, n%)
+            ssml_template = ssml_template.format(prosody_rate="slow", text="{text}")
 
-            # add default audio files
-            synth("Correct.", filename="correct.wav", outdir="audio")
-            synth("Try again.", filename="tryagain.wav", outdir="audio")
+            # add refexp to SSML template and synthesize
+            utterance = ssml_template.format(text=str(refexp))
+            synth(utterance, filename=audio_filename, outdir="audio", textout=True)
 
             # add image and audio file names and append to results
             rslt["image_filename"]= image_filename
@@ -127,3 +134,9 @@ if __name__ == '__main__':
         filename = 'json/{time}-{number}.json'.format(time=timestamp, number=m)
         with open(filename, 'w') as outfile:
             json.dump(jsondata, outfile, sort_keys=True, indent=1)
+
+        print ("set complete: " + filename + "\n")
+
+    # add default audio files
+    synth("Correct.", filename="correct.wav", outdir="audio")
+    synth("Try again.", filename="tryagain.wav", outdir="audio")
