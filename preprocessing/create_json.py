@@ -7,6 +7,7 @@ import argparse
 import configparser
 from voice_synth import synth
 from shutil import copyfile
+from PIL import Image
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -70,7 +71,7 @@ if __name__ == '__main__':
 
     for m in range(n):
 
-        # get 10 random image_ids
+        # get random image_ids
         sample = np.random.choice(image_ids, sample_size)
 
         #create new DataFrame with columns from refdf and bbdf
@@ -86,15 +87,26 @@ if __name__ == '__main__':
             # copy the corresponding image into image output folder
             image_filename = img_filename(i)
             img_source = image_dir + "/" + image_filename
-            img_destination = cwd+"/images/" + image_filename
-            copyfile(img_source, img_destination)
+            img_destination_jpg = cwd+"/images/" + image_filename
+            copyfile(img_source, img_destination_jpg)
             print ("image "+image_filename)
 
-            # add whitespace where continue button can be placed
+            # add transparent area for buttons and convert to png:
 
-            #    Create a new_img that is (base_width, base_height + background.height) in size
-            #    Paste the original img into new_img at (0, 0)
-            #    Paste the background into new_img at (0, base_height)
+                # load image from export folder
+            im_in = Image.open(img_destination_jpg)
+                # set filename and destination for export file
+            image_filename = os.path.splitext(image_filename)[0]+".png"
+            img_destination_png = os.path.splitext(img_destination_jpg)[0]+".png"
+            jpg_width, jpg_height = im_in.size
+                # create transparent image (200px higher than original image)
+            im_out = Image.new('RGBA', (jpg_width, (jpg_height+200)), (255,0,0,0))
+                # paste original image into newly created image
+            im_out.paste(im_in, (0,0))
+                # save resulting image to destination path
+            im_out.save(img_destination_png, "PNG", compress_level=9, optimize=True)
+                # remove original image in export folder
+            os.remove(img_destination_jpg)
 
             # Audio file creation:
             refexp = rslt["refexp"].values[0]
