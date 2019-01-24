@@ -3,7 +3,9 @@ import aws_config
 import json
 from datetime import datetime
 
-files = ["published/"+f for f in os.listdir('published')]
+files = ["published/"+f for f in os.listdir('published') if f.endswith('.json')]
+
+print ("files found: ", files)
 
 hits = []
 
