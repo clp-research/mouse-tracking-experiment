@@ -3,3 +3,6 @@ preprocessing/voice/
 preprocessing/voice_synth.pyc
 preprocessing/config.ini
 evaluation/.ipynb_checkpoints/
+amt_integration/config.ini
+amt_integration/published/*.json
+amt_integration/__pycache__
