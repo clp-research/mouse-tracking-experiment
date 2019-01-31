@@ -149,6 +149,11 @@ if __name__ == '__main__':
 
         print ("set complete: " + filename + "\n")
 
-    # add default audio files
-    synth("Correct.", filename="correct.wav", outdir="audio")
-    synth("Try again.", filename="tryagain.wav", outdir="audio")
+    # delete preexisting feedback audio files
+    for file in ["audio/correct.wav","audio/correct.json", "audio/tryagain.wav", "audio/tryagain.json"]:
+        if os.path.isfile(file):
+            os.remove(file)
+
+    # create feedback audio files
+    synth("Correct.", filename="correct.wav", outdir="audio", textout=True)
+    synth("Try again.", filename="tryagain.wav", outdir="audio", textout=True)
