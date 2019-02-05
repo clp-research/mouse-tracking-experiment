@@ -5,6 +5,7 @@ import os
 import datetime
 import argparse
 import configparser
+from ssml_preprocess import ssml_utterance
 from voice_synth import synth
 from shutil import copyfile
 from PIL import Image
@@ -110,29 +111,13 @@ if __name__ == '__main__':
 
             # Audio file creation:
             refexp = rslt["refexp"].values[0]
+            tagged = rslt["tagged"].values[0]
             rexid = rslt["rex_id"].values[0]
             audio_filename ="{img_id}-{rex_id}.wav".format(img_id=i,rex_id=rexid)
 
-            # SSML template for text to speech synthesis
-            ssml_template =  """
-                <?xml version="1.0"?>
-                <speak version="1.1" xmlns="http://www.w3.org/2001/10/synthesis"
-                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                       xsi:schemaLocation="http://www.w3.org/2001/10/synthesis
-                                 http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
-                       xml:lang="en-GB">
-                                <s>
-                                    Please click on the <prosody rate="{prosody_rate}">{text}.</prosody>
-                                </s>
-                        </prosody>
-                </speak>
-                """
+            # ssml_preprocess
+            utterance = ssml_utterance(refexp, tagged, prosody_rate = "slow")
 
-            # adjust prosody rate for refexp (x-slow, slow, medium, fast, x-fast, n%)
-            ssml_template = ssml_template.format(prosody_rate="slow", text="{text}")
-
-            # add refexp to SSML template and synthesize
-            utterance = ssml_template.format(text=str(refexp))
             synth(utterance, filename=audio_filename, outdir="audio", textout=True)
 
             # add image and audio file names and append to results
