@@ -9,12 +9,7 @@ from slurk_link_generator import insert_names_and_tokens
 
 RESULTS = []
 # image files to be shown in AMT
-SLIDES = ['https://raw.githubusercontent.com/nilinykh/meetup_instructions/master/0001.jpeg',
-          'https://raw.githubusercontent.com/nilinykh/meetup_instructions/master/0002.jpeg',
-          'https://raw.githubusercontent.com/nilinykh/meetup_instructions/master/0003.gif',
-          'https://raw.githubusercontent.com/nilinykh/meetup_instructions/master/0004.jpeg',
-          'https://raw.githubusercontent.com/nilinykh/meetup_instructions/master/0005.jpeg',
-          'https://raw.githubusercontent.com/nilinykh/meetup_instructions/master/0006.jpeg']
+SLIDES = []
 
 HTML = open('./HIT_template.html', 'r').read()
 QUESTION_XML = """
@@ -48,14 +43,7 @@ def create(login_url):
     '''defining HITs' template for MTurk'''
     new_hit = aws_config.ConnectToMTurk.mturk.create_hit(
         **Q_ATTR,
-        Question=QUESTION.replace('${Link}', login_url).\
-        replace('${Image1}', SLIDES[0]).\
-        replace('${Image2}', SLIDES[1]).\
-        replace('${Image3}', SLIDES[2]).\
-        replace('${Image4}', SLIDES[3]).\
-        replace('${Image5}', SLIDES[4]).\
-        replace('${Image6}', SLIDES[5]),
-        QualificationRequirements=[
+        Question=QUESTION.replace('${Link}', login_url), QualificationRequirements=[
         #    {
         #        'QualificationTypeId' : '3ETJLUMS0DM8X13DGYGLAJ6V7SNU3X',
         #        'Comparator' : 'NotIn',
