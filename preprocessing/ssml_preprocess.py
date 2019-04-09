@@ -11,33 +11,20 @@ ssml_template =  """
                      http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
            xml:lang="en-GB">
                     <s>
-                        {intro} <prosody rate="{prosody_rate}">The {text}.</prosody>
+                        {intro}<prosody rate="{prosody_rate}">{article}{text}{punctuation}</prosody>
                     </s>
             </prosody>
     </speak>
     """
 
-def modify_refexp(text, tagged):
-    return text
-    # get rid of double articles (i.e. initial 'the' resulting in 'the the ...')
-    # ? check if there's an 'NN' in the refexp, if not: add one
+def ssml_utterance(string, string_tagged=False, prosody_rate = "medium", intro = "Next: ",article="The ", punctuation=".", ssml_template=ssml_template):
 
-#    result_text = ""
-#    pause = '<break strength="x-weak"/>'
-#    for word in text.split():
-#        result_text += (word+" ")
-#        if tagged[text.split().index(word)][1] == u'NN':
-#            result_text += pause
-#    return result_text
+    ssml_template = ssml_template.format(article=article, punctuation=punctuation, intro=intro, prosody_rate="{prosody_rate}",text="{text}")
 
-def ssml_utterance(refexp, refexp_tagged, prosody_rate = "medium", intro = "Next:", ssml_template=ssml_template):
+    # adjust prosody rate (x-slow, slow, medium, fast, x-fast, n%)
+    ssml_template = ssml_template.format(prosody_rate=prosody_rate, text="{text}")
 
-    # adjust prosody rate for refexp (x-slow, slow, medium, fast, x-fast, n%)
-    ssml_template = ssml_template.format(prosody_rate=prosody_rate, text="{text}", intro=intro)
-
-    refexp = modify_refexp(refexp, refexp_tagged)
-
-    # add refexp to SSML template and return utterance
-    utterance = ssml_template.format(text=str(refexp))
-    print ("refexp: '{text}', prosody rate: '{prosody_rate}'".format(text=refexp, prosody_rate=prosody_rate))
+    # add string to SSML template and return utterance
+    utterance = ssml_template.format(text=str(string))
+    print ("string: '{text}', prosody rate: '{prosody_rate}'".format(text=string, prosody_rate=prosody_rate))
     return utterance

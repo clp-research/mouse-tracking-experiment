@@ -68,6 +68,9 @@ if __name__ == '__main__':
     # extract unique image_ids from refdf
     image_ids = refdf['image_id'].unique()
 
+    # create empty utterance dict
+    utterances = {}
+
     print ("\ncreating data sets\n")
 
     for m in range(n):
@@ -111,12 +114,15 @@ if __name__ == '__main__':
 
             # Audio file creation:
             refexp = rslt["refexp"].values[0]
-            tagged = rslt["tagged"].values[0]
+            #tagged = rslt["tagged"].values[0]
             rexid = rslt["rex_id"].values[0]
             audio_filename ="{img_id}-{rex_id}.wav".format(img_id=i,rex_id=rexid)
 
             # ssml_preprocess
-            utterance = ssml_utterance(refexp, tagged, prosody_rate = "slow")
+            utterance = ssml_utterance(refexp, prosody_rate = "medium")
+
+            # add utterance-ssml to output dict
+            utterances[i] = utterance
 
             synth(utterance, filename=audio_filename, outdir="audio", textout=True)
 
@@ -134,11 +140,18 @@ if __name__ == '__main__':
 
         print ("set complete: " + filename + "\n")
 
-    # delete preexisting feedback audio files
-    for file in ["audio/correct.wav","audio/correct.json", "audio/tryagain.wav", "audio/tryagain.json"]:
-        if os.path.isfile(file):
-            os.remove(file)
+    for i in ["Correct", "Try again"]:
+        utterance = ssml_utterance(i, prosody_rate = "medium", intro='', article='')
 
-    # create feedback audio files
-    synth("Correct.", filename="correct.wav", outdir="audio", textout=True)
-    synth("Try again.", filename="tryagain.wav", outdir="audio", textout=True)
+        filename = i.replace(' ','').lower()
+        # delete preexisting feedback audio files
+        for file in [filename+".wav",i+filename+".json"]:
+            if os.path.isfile(file):
+                os.remove(file)
+        synth(utterance, filename=filename+'.wav', outdir='audio', textout=True)
+        utterances[filename] = utterance
+
+    # write ssml utterances to json file
+    filename = 'json/{time}-ssml.json'.format(time=timestamp, number=m)
+    with open(filename, 'w') as outfile:
+        json.dump(utterances, outfile, sort_keys=True, indent=1)
