@@ -1,5 +1,3 @@
-preprocessing/cerevoice_eng/
-preprocessing/voice/
 */*.pyc
 */*.py.swp
 preprocessing/config.ini
