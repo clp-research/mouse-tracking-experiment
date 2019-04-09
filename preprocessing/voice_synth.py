@@ -29,7 +29,7 @@ import sys
 import json
 
 dir = os.path.dirname(os.path.realpath(__file__))
-engdir = os.path.join(dir, 'cerevoice_eng')
+engdir = os.path.join(dir, 'cerevoice_eng/pylib')
 sys.path.append(engdir)
 
 import cerevoice_eng
