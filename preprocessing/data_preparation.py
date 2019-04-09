@@ -5,7 +5,7 @@ import os
 import datetime
 import argparse
 import configparser
-from ssml_preprocess import ssml_utterance
+from ssml_formatting import ssml_utterance
 from voice_synth import synth
 from shutil import copyfile
 from PIL import Image
@@ -13,22 +13,17 @@ from PIL import Image
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-if 'output' in config['PATHS']:
+if os.path.isdir(config['PATHS']['output']):
     outdir = config['PATHS']['output']
 else:
     outdir = os.getcwd()+"/data/output/"
-
-if 'json' in config['PATHS']:
-    json_path = config['PATHS']['json']
-else:
-    json_path = os.getcwd()+"/data/"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--s", help='number of sets to be created', default=int(config['SETTINGS']['sets']), type=int)
 parser.add_argument("--n", help='number of images per set', default=int(config['SETTINGS']['images']), type=int)
 parser.add_argument("--o", help='path for output', default=outdir)
-parser.add_argument("--p", help='path for json input', default=json_path)
-parser.add_argument("--i", help='path to image corpus', default=config['PATHS']['corpus'])
+parser.add_argument("--p", help='path for json input', default=config['PATHS']['input_json'])
+parser.add_argument("--i", help='path to image corpus', default=config['PATHS']['input_images'])
 args = parser.parse_args()
 
 n = args.s
