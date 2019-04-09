@@ -1,8 +1,7 @@
 preprocessing/cerevoice_eng/
 preprocessing/voice/
-preprocessing/voice_synth.pyc
-preprocessing/ssml_preprocess.pyc
-preprocessing/ssml_preprocess.py.swp
+*/*.pyc
+*/*.py.swp
 preprocessing/config.ini
 evaluation/.ipynb_checkpoints/
 amt_integration/config.ini
